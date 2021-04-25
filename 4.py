@@ -1,14 +1,12 @@
 import os
-import os
 import sys
 import requests
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QLabel, QApplication, QMainWindow
+from PyQt5.QtWidgets import QLabel, QApplication, QMainWindow, QWidget
 from PyQt5 import uic
-from PIL import Image
 
 
-class MyMap(QMainWindow):
+class MapApi(QMainWindow):
     def __init__(self):
         super().__init__()
         self.latitude, self.longitude, self.scale = '37.530887', '55.703118', '0.002'
@@ -18,7 +16,7 @@ class MyMap(QMainWindow):
                             '&spn=', self.scale, ',', self.scale, '&l=map']
         self.mapCreate()
 
-    def getImage(self):
+    def showIm(self):
         self.latitude = self.edit_x.toPlainText()
         self.longitude = self.edit_y.toPlainText()
         self.scale = self.mashtab.toPlainText()
@@ -37,15 +35,13 @@ class MyMap(QMainWindow):
             self.map_file = "map.jpeg"
         with open(self.map_file, "wb") as file:
             file.write(response.content)
-        return 'успех'
+        return True
 
     def mapCreate(self):
-        is_all_secc = self.getImage()
-        if is_all_secc == 'успех':
+        fl = self.showIm()
+        if fl:
             self.pixmap = QPixmap(self.map_file)
             self.image.setPixmap(self.pixmap)
-        else:
-            self.image.setText(is_all_secc)
 
     def close(self, event):
         os.remove(self.map_file)
@@ -53,6 +49,6 @@ class MyMap(QMainWindow):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    ex = MyMap()
+    ex = MapApi()
     ex.show()
     sys.exit(app.exec())
